@@ -1,31 +1,21 @@
-gulp = require("gulp")
-path = require("path")
-source = require("vinyl-source-stream")
-browserify = require("browserify")
-liveify = require("liveify")
-watchify = require("watchify")
-util = require("gulp-util")
-plumber = require("gulp-plumber")
-sourcemaps = require("gulp-sourcemaps")
-concat = require("gulp-concat")
-rename = require("gulp-rename")
-streamify = require("gulp-streamify")
-envify = require("envify/custom")
-
 require! {
   gulp
   path
   browserify
   liveify
   watchify
+
+  envify: 'envify/custom'
+  source: 'vinyl-source-stream'
+
   util: 'gulp-util'
   plumber: 'gulp-plumber'
   sourcemaps: 'gulp-sourcemaps'
   concat: 'gulp-concat'
-  rename: "gulp-rename"
-  streamify: "gulp-streamify"
-  envify: "envify/custom"
+  rename: 'gulp-rename'
+  streamify: 'gulp-streamify'
 }
+
 build = "build"
 src = "./src"
 paths =
@@ -33,27 +23,27 @@ paths =
   build: "build"
 
 production = process.env.NODE_ENV is "production"
-gulp.task "copy", ->
-
-  # Copy html
+gulp.task "copy", !->
   gulp.src(src + "/index.html").pipe gulp.dest(build)
-  return
 
 gulp.task "browserify-watch", ->
   rebundle = ->
     bundler.bundle().on("error", util.log).pipe(source("app.js")).pipe gulp.dest("./build")
-  bundler = watchify(browserify("./src/scripts/index.ls", watchify.args))
+
+  bundler = watchify(browserify("./src/ls/index.ls", watchify.args))
+
   bundler.transform liveify
   bundler.transform envify(NODE_ENV: "development")
+
   bundler.on "update", rebundle
-  rebundle()
+  rebundle!
 
 gulp.task "browserify", ->
   bundleMethod = (if global.isWatching then watchify else browserify)
   bundler = bundleMethod(
 
     # Specify the entry point of your app
-    entries: ["./src/scripts/index.ls"]
+    entries: ["./src/ls/index.ls"]
 
     # Add file extentions to make optional in your requires
     extensions: [".ls"]
@@ -77,12 +67,9 @@ gulp.task "watch", ->
 
 gulp.task "default", [
   "copy"
-  "less"
   "watch"
-  "browser-sync"
 ]
 gulp.task "build", [
   "copy"
-  "less"
   "browserify"
 ]

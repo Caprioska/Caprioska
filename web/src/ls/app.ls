@@ -1,7 +1,5 @@
 require! {
   React: 'react'
-  './api/api.ls'
-  './api/auth.ls'
 }
 
 Dom = React.DOM
@@ -12,8 +10,6 @@ App = React.create-class do
 
   render: ->
     div {},
-      @logged-in {}
-      div {},
-        @props.active-route-handler! || "Loading..."
+      @props.active-route-handler! || "Loading..."
 
 module.exports = App
