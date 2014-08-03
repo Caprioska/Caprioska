@@ -1,0 +1,21 @@
+# This is an example of a config file adapted from wercker.
+---
+base: caprioska/go:1.3
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    # A custom script step, name value is used in the UI
+    # and the code value contains the command that get executed
+    - script:
+        name: pring Go Env
+        code: |
+          go env
+    # - script:
+    #     name: install gulp
+    #     code: |
+    #       npm install gulp -g
+    # - script:
+    #     name: gulp build
+    #     code: |
+    #       NODE_ENV=production gulp build
